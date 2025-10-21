@@ -89,7 +89,7 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
   const allImagesLoaded = loadedImages.length === buildingImages.length && loadedImages.every(Boolean);
 
   return (
-    <div className={`relative w-full h-full overflow-hidden ${className}`}>
+    <div className={`relative w-full h-full overflow-hidden z-0 ${className}`}>
       {/* 로딩 상태 */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
