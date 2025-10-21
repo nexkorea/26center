@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
+// 로컬 이미지 import
+import heroBuilding1 from '../assets/hero_building_1.jpg';
+import heroBuilding2 from '../assets/hero_building_2.jpg';
+import heroBuilding3 from '../assets/hero_building_3.jpg';
+
 interface BuildingSliderProps {
   className?: string;
 }
@@ -8,19 +13,19 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
 
-  // 빌딩 이미지들 (Unsplash의 안정적인 이미지 사용)
+  // 빌딩 이미지들 (첨부해주신 로컬 이미지 사용)
   const buildingImages = [
     {
-      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Modern Office Building 1'
+      url: heroBuilding1,
+      alt: '26센터 건물 로비 - 현대적인 대형 건물의 넓은 로비 공간'
     },
     {
-      url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80',
-      alt: 'Luxury Office Building'
+      url: heroBuilding2,
+      alt: '26센터 건물 내부 - 세련된 건축 디테일과 자연 채광'
     },
     {
-      url: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Business Complex'
+      url: heroBuilding3,
+      alt: '26센터 건물 중앙홀 - 메자닌과 입구가 조화된 현대적 공간'
     }
   ];
 
@@ -43,14 +48,16 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
     loadImages();
   }, [buildingImages]);
 
-  // 3초마다 자동 슬라이딩
+  // 3초마다 자동 슬라이딩 (모든 이미지가 로드된 후에만 시작)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % buildingImages.length);
-    }, 3000);
+    if (loadedImages.length === buildingImages.length && loadedImages.every(Boolean)) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % buildingImages.length);
+      }, 3000);
 
-    return () => clearInterval(interval);
-  }, [buildingImages.length]);
+      return () => clearInterval(interval);
+    }
+  }, [buildingImages.length, loadedImages]);
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
@@ -65,16 +72,20 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
           >
             {loadedImages[index] ? (
               <div
-                className="w-full h-full bg-cover bg-center bg-no-repeat"
+                className="w-full h-full bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-700"
                 style={{
-                  backgroundImage: `url('${image.url}')`
+                  backgroundImage: `url('${image.url}')`,
+                  backgroundAttachment: 'fixed'
                 }}
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center">
-                <div className="text-white text-center">
-                  <i className="ri-building-line text-6xl mb-4"></i>
-                  <p className="text-lg">빌딩 이미지 로딩 중...</p>
+              <div className="w-full h-full bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 flex items-center justify-center">
+                <div className="text-white text-center animate-pulse">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i className="ri-building-line text-3xl"></i>
+                  </div>
+                  <p className="text-lg font-medium">26센터 이미지 로딩 중...</p>
+                  <div className="mt-2 w-8 h-1 bg-white bg-opacity-30 rounded-full mx-auto"></div>
                 </div>
               </div>
             )}
@@ -85,15 +96,15 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
       </div>
 
       {/* 슬라이드 인디케이터 */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
         {buildingImages.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-4 h-4 rounded-full transition-all duration-300 shadow-lg ${
               index === currentSlide
-                ? 'bg-white scale-110'
-                : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+                ? 'bg-white scale-125 shadow-xl'
+                : 'bg-white bg-opacity-60 hover:bg-opacity-80 hover:scale-110'
             }`}
             aria-label={`슬라이드 ${index + 1}로 이동`}
           />
@@ -105,20 +116,20 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
         onClick={() => setCurrentSlide((prev) => 
           prev === 0 ? buildingImages.length - 1 : prev - 1
         )}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full transition-all duration-200"
+        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
         aria-label="이전 슬라이드"
       >
-        <i className="ri-arrow-left-line text-xl"></i>
+        <i className="ri-arrow-left-line text-2xl"></i>
       </button>
       
       <button
         onClick={() => setCurrentSlide((prev) => 
           (prev + 1) % buildingImages.length
         )}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-2 rounded-full transition-all duration-200"
+        className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
         aria-label="다음 슬라이드"
       >
-        <i className="ri-arrow-right-line text-xl"></i>
+        <i className="ri-arrow-right-line text-2xl"></i>
       </button>
     </div>
   );
