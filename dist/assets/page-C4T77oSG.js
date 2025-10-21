@@ -1,4 +1,4 @@
-import{a as u,r,j as e,L as s}from"./index-C_N7Qfoc.js";import{s as o,L as n}from"./Logo26Building-DKNTGC14.js";function b(){const{id:l}=u(),[t,h]=r.useState(null),[g,c]=r.useState(!0),[x,p]=r.useState("");r.useEffect(()=>{l&&j(l)},[l]);const j=async a=>{try{c(!0),await o.rpc("increment_notice_view_count",{notice_id:a});const{data:i,error:m}=await o.from("notices").select(`
+import{a as u,r,j as e,L as s}from"./index-ChmTvHWE.js";import{s as o,L as n}from"./Logo26Building-B9N0PR6P.js";function b(){const{id:l}=u(),[t,h]=r.useState(null),[g,c]=r.useState(!0),[x,p]=r.useState("");r.useEffect(()=>{l&&j(l)},[l]);const j=async a=>{try{c(!0),await o.rpc("increment_notice_view_count",{notice_id:a});const{data:i,error:m}=await o.from("notices").select(`
           *,
           profiles (
             name,
