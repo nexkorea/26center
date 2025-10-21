@@ -1,4 +1,4 @@
-import{r as n,j as e,L as l,u as _}from"./index-BC6Ow5Dq.js";import{s as f,L as y}from"./Logo26Building-DPNVMLyf.js";const I=({limit:d=5,showTitle:o=!0,className:i=""})=>{const[c,u]=n.useState([]),[x,m]=n.useState(!0),[r,p]=n.useState("");n.useEffect(()=>{b()},[d]);const b=async()=>{try{m(!0);const{data:s,error:t}=await f.from("notices").select(`
+import{r as n,j as e,L as l,u as _}from"./index-DT7ijae0.js";import{s as f,L as y}from"./Logo26Building-Bi9dNJYC.js";const I=({limit:d=5,showTitle:o=!0,className:i=""})=>{const[c,u]=n.useState([]),[x,m]=n.useState(!0),[r,p]=n.useState("");n.useEffect(()=>{b()},[d]);const b=async()=>{try{m(!0);const{data:s,error:t}=await f.from("notices").select(`
           *,
           profiles (
             name,

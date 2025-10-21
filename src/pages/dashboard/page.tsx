@@ -73,6 +73,26 @@ export default function Dashboard() {
     );
   };
 
+  // 입주자 유형 텍스트 변환 함수
+  const getTenantTypeText = (tenantType: string) => {
+    switch (tenantType) {
+      case 'owner': return '소유주';
+      case 'tenant': return '임차인';
+      case 'other': return '기타';
+      default: return '미분류';
+    }
+  };
+
+  // 입주자 유형 아이콘 변환 함수
+  const getTenantTypeIcon = (tenantType: string) => {
+    switch (tenantType) {
+      case 'owner': return 'ri-home-4-line';
+      case 'tenant': return 'ri-building-line';
+      case 'other': return 'ri-question-line';
+      default: return 'ri-question-line';
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -116,13 +136,13 @@ export default function Dashboard() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">내 입주카드</h2>
             <div className="flex space-x-3">
-              {moveInCards.length === 1 && (
+              {moveInCards.length === 1 && moveInCards[0].status === 'pending' && (
                 <Link
-                  to={`/move-in-card/detail/${moveInCards[0].id}`}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                  to={`/move-in-card/edit/${moveInCards[0].id}`}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
                 >
-                  <i className="ri-eye-line mr-2"></i>
-                  상세보기
+                  <i className="ri-edit-line mr-2"></i>
+                  수정하기
                 </Link>
               )}
               {moveInCards.length === 0 && (
@@ -137,7 +157,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* 입주카드 목록 */}
+          {/* 입주카드 상세보기 */}
           {moveInCards.length === 0 ? (
             <div className="bg-white shadow rounded-lg p-6 text-center">
               <i className="ri-file-list-3-line text-4xl text-gray-400 mb-4"></i>
@@ -151,56 +171,142 @@ export default function Dashboard() {
               </Link>
             </div>
           ) : (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-              <ul className="divide-y divide-gray-200">
-                {moveInCards.map((card) => (
-                  <li key={card.id}>
-                    <div className="px-4 py-4 sm:px-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <p className="text-lg font-medium text-blue-600 truncate">
-                              {card.company_name}
-                            </p>
-                            {getStatusBadge(card.status)}
-                          </div>
-                          <div className="mt-2 sm:flex sm:justify-between">
-                            <div className="sm:flex">
-                              <p className="flex items-center text-sm text-gray-500">
-                                <i className="ri-building-line mr-1"></i>
-                                {card.floor_number}층 {card.room_number}호
-                              </p>
-                              <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                <i className="ri-calendar-line mr-1"></i>
-                                입주일: {new Date(card.move_in_date).toLocaleDateString('ko-KR')}
-                              </p>
-                            </div>
-                            <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                              <i className="ri-time-line mr-1"></i>
-                              신청일: {new Date(card.created_at).toLocaleDateString('ko-KR')}
-                            </div>
-                          </div>
-                          {card.admin_notes && (
-                            <div className="mt-2 p-3 bg-gray-50 rounded-md">
-                              <p className="text-sm text-gray-700">
-                                <strong>관리자 메모:</strong> {card.admin_notes}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                        <div className="ml-4 flex-shrink-0">
-                          <Link
-                            to={`/move-in-card/${card.id}`}
-                            className="text-blue-600 hover:text-blue-500 cursor-pointer"
-                          >
-                            <i className="ri-eye-line text-lg"></i>
-                          </Link>
-                        </div>
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              {moveInCards.map((card) => (
+                <div key={card.id} className="p-6">
+                  {/* 헤더 */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900">{card.company_name}</h3>
+                      <p className="text-gray-600 mt-1">{card.business_type}</p>
+                    </div>
+                    {getStatusBadge(card.status)}
+                  </div>
+
+                  {/* 입주 정보 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">입주자 유형</label>
+                      <div className="flex items-center space-x-2">
+                        <i className={`${getTenantTypeIcon(card.tenant_type || 'tenant')} text-blue-600`}></i>
+                        <span className="text-gray-900 font-medium">{getTenantTypeText(card.tenant_type || 'tenant')}</span>
                       </div>
                     </div>
-                  </li>
-                ))}
-              </ul>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">입주 위치</label>
+                      <div className="flex items-center space-x-2">
+                        <i className="ri-building-line text-blue-600"></i>
+                        <span className="text-gray-900 font-medium">{card.floor_number}층 {card.room_number}호</span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">입주일</label>
+                      <div className="flex items-center space-x-2">
+                        <i className="ri-calendar-line text-blue-600"></i>
+                        <span className="text-gray-900 font-medium">{new Date(card.move_in_date).toLocaleDateString('ko-KR')}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 연락처 정보 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">담당자</label>
+                      <div className="flex items-center space-x-2">
+                        <i className="ri-user-line text-blue-600"></i>
+                        <span className="text-gray-900 font-medium">{card.contact_person}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">연락처</label>
+                      <div className="flex items-center space-x-2">
+                        <i className="ri-phone-line text-blue-600"></i>
+                        <span className="text-gray-900 font-medium">{card.contact_phone}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+                      <div className="flex items-center space-x-2">
+                        <i className="ri-mail-line text-blue-600"></i>
+                        <span className="text-gray-900 font-medium">{card.contact_email}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 직원 수 및 주차 정보 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">직원 수</label>
+                      <div className="flex items-center space-x-2">
+                        <i className="ri-group-line text-blue-600"></i>
+                        <span className="text-gray-900 font-medium">{card.employee_count}명</span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">주차 정보</label>
+                      <div className="flex items-center space-x-2">
+                        <i className="ri-car-line text-blue-600"></i>
+                        <span className="text-gray-900 font-medium">
+                          {card.parking_needed ? `${card.parking_count}대` : '불필요'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 차량번호 정보 */}
+                  {card.parking_needed && card.vehicle_numbers && card.vehicle_numbers.length > 0 && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">등록된 차량번호</label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {(card.vehicle_numbers || []).map((vehicleNumber, index) => (
+                          <div key={index} className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {index + 1}번
+                            </span>
+                            <span className="text-gray-900 font-mono">{vehicleNumber}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 특별 요청사항 */}
+                  {card.special_requests && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">특별 요청사항</label>
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <p className="text-gray-900 whitespace-pre-wrap">{card.special_requests}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 관리자 메모 */}
+                  {card.admin_notes && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">관리자 메모</label>
+                      <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+                        <p className="text-gray-900 whitespace-pre-wrap">{card.admin_notes}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 신청 정보 */}
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center space-x-4">
+                        <span>
+                          <i className="ri-time-line mr-1"></i>
+                          신청일: {new Date(card.created_at).toLocaleDateString('ko-KR')}
+                        </span>
+                        <span>
+                          <i className="ri-refresh-line mr-1"></i>
+                          수정일: {new Date(card.updated_at).toLocaleDateString('ko-KR')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
