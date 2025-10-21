@@ -28,6 +28,7 @@ export default function NewMoveInCard() {
     employee_count: 0,
     parking_needed: false,
     parking_count: 0,
+    vehicle_numbers: [] as string[], // 차량번호 배열
     special_requests: ''
   });
 
@@ -141,12 +142,21 @@ export default function NewMoveInCard() {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({
         ...prev,
-        [name]: checked
+        [name]: checked,
+        // 주차 공간이 필요하지 않으면 차량번호 배열 초기화
+        ...(name === 'parking_needed' && !checked ? { vehicle_numbers: [] } : {})
       }));
     } else if (type === 'number') {
+      const numValue = parseInt(value) || 0;
       setFormData(prev => ({
         ...prev,
-        [name]: parseInt(value) || 0
+        [name]: numValue,
+        // 주차 대수가 변경되면 차량번호 배열 크기 조정
+        ...(name === 'parking_count' ? {
+          vehicle_numbers: prev.vehicle_numbers.slice(0, numValue).concat(
+            Array(Math.max(0, numValue - prev.vehicle_numbers.length)).fill('')
+          )
+        } : {})
       }));
     } else {
       setFormData(prev => ({
@@ -154,6 +164,18 @@ export default function NewMoveInCard() {
         [name]: value
       }));
     }
+  };
+
+  /**
+   * 차량번호 입력 처리
+   */
+  const handleVehicleNumberChange = (index: number, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      vehicle_numbers: prev.vehicle_numbers.map((num, i) => 
+        i === index ? value : num
+      )
+    }));
   };
 
   /**
@@ -196,7 +218,13 @@ export default function NewMoveInCard() {
       case 3:
         return !!(formData.contact_person && formData.contact_phone && formData.contact_email);
       case 4:
-        return true; // 추가 정보는 선택사항
+        // 주차 공간이 필요한 경우 차량번호 입력 검증
+        if (formData.parking_needed) {
+          return formData.parking_count > 0 && 
+                 formData.vehicle_numbers.length === formData.parking_count &&
+                 formData.vehicle_numbers.every(num => num.trim() !== '');
+        }
+        return true; // 주차 공간이 필요하지 않으면 항상 유효
       default:
         return false;
     }
@@ -672,22 +700,55 @@ export default function NewMoveInCard() {
                     </div>
                     
                     {formData.parking_needed && (
-                      <div className="mt-4 animate-fadeIn">
-                        <label htmlFor="parking_count" className="block text-sm font-semibold text-gray-700 mb-2">
-                          <i className="ri-car-line mr-2 text-blue-600"></i>
-                          필요한 주차 대수 *
-                        </label>
-                        <input
-                          type="number"
-                          name="parking_count"
-                          id="parking_count"
-                          min="1"
-                          required={formData.parking_needed}
-                          value={formData.parking_count}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900"
-                          placeholder="주차 대수를 입력하세요"
-                        />
+                      <div className="mt-4 animate-fadeIn space-y-4">
+                        <div>
+                          <label htmlFor="parking_count" className="block text-sm font-semibold text-gray-700 mb-2">
+                            <i className="ri-car-line mr-2 text-blue-600"></i>
+                            필요한 주차 대수 *
+                          </label>
+                          <input
+                            type="number"
+                            name="parking_count"
+                            id="parking_count"
+                            min="1"
+                            required={formData.parking_needed}
+                            value={formData.parking_count}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900"
+                            placeholder="주차 대수를 입력하세요"
+                          />
+                        </div>
+
+                        {/* 차량번호 입력 필드들 */}
+                        {formData.parking_count > 0 && (
+                          <div className="space-y-3">
+                            <label className="block text-sm font-semibold text-gray-700">
+                              <i className="ri-car-2-line mr-2 text-blue-600"></i>
+                              차량번호 입력 *
+                            </label>
+                            <div className="grid grid-cols-1 gap-3">
+                              {Array.from({ length: formData.parking_count }, (_, index) => (
+                                <div key={index} className="flex items-center space-x-3">
+                                  <span className="text-sm font-medium text-gray-600 w-8">
+                                    {index + 1}번
+                                  </span>
+                                  <input
+                                    type="text"
+                                    value={formData.vehicle_numbers[index] || ''}
+                                    onChange={(e) => handleVehicleNumberChange(index, e.target.value)}
+                                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                                    placeholder={`차량번호 ${index + 1} (예: 12가3456)`}
+                                    required={formData.parking_needed}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                            <p className="text-xs text-gray-500">
+                              <i className="ri-information-line mr-1"></i>
+                              차량번호는 한글, 숫자, 영문을 포함하여 입력해주세요 (예: 12가3456, 123가4567)
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

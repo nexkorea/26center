@@ -31,6 +31,7 @@ export type MoveInCard = {
   employee_count: number;
   parking_needed: boolean;
   parking_count: number;
+  vehicle_numbers: string[]; // 차량번호 배열 (주차 대수에 맞춰)
   special_requests?: string;
   status: 'pending' | 'approved' | 'rejected';
   admin_notes?: string;

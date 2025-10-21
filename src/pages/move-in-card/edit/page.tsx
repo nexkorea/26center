@@ -26,6 +26,7 @@ export default function EditMoveInCard() {
     employee_count: 0,
     parking_needed: false,
     parking_count: 0,
+    vehicle_numbers: [] as string[], // 차량번호 배열
     special_requests: ''
   });
 
@@ -97,6 +98,7 @@ export default function EditMoveInCard() {
         employee_count: data.employee_count || 0,
         parking_needed: data.parking_needed || false,
         parking_count: data.parking_count || 0,
+        vehicle_numbers: data.vehicle_numbers || [], // 차량번호 배열 로드
         special_requests: data.special_requests || ''
       });
     } catch (error: any) {
@@ -108,9 +110,42 @@ export default function EditMoveInCard() {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
+    if (type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked,
+        // 주차 공간이 필요하지 않으면 차량번호 배열 초기화
+        ...(name === 'parking_needed' && !checked ? { vehicle_numbers: [] } : {})
+      }));
+    } else if (type === 'number') {
+      const numValue = parseInt(value) || 0;
+      setFormData(prev => ({
+        ...prev,
+        [name]: numValue,
+        // 주차 대수가 변경되면 차량번호 배열 크기 조정
+        ...(name === 'parking_count' ? {
+          vehicle_numbers: prev.vehicle_numbers.slice(0, numValue).concat(
+            Array(Math.max(0, numValue - prev.vehicle_numbers.length)).fill('')
+          )
+        } : {})
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  /**
+   * 차량번호 입력 처리
+   */
+  const handleVehicleNumberChange = (index: number, value: string) => {
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : (type === 'number' ? parseInt(value) || 0 : value)
+      vehicle_numbers: prev.vehicle_numbers.map((num, i) => 
+        i === index ? value : num
+      )
     }));
   };
 
@@ -411,19 +446,51 @@ export default function EditMoveInCard() {
                     </label>
                   </div>
                   {formData.parking_needed && (
-                    <div>
-                      <label htmlFor="parking_count" className="block text-sm font-medium text-gray-700 mb-2">
-                        주차 공간 수
-                      </label>
-                      <input
-                        type="number"
-                        name="parking_count"
-                        id="parking_count"
-                        min="0"
-                        value={formData.parking_count}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      />
+                    <div className="space-y-4">
+                      <div>
+                        <label htmlFor="parking_count" className="block text-sm font-medium text-gray-700 mb-2">
+                          주차 공간 수
+                        </label>
+                        <input
+                          type="number"
+                          name="parking_count"
+                          id="parking_count"
+                          min="0"
+                          value={formData.parking_count}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        />
+                      </div>
+
+                      {/* 차량번호 입력 필드들 */}
+                      {formData.parking_count > 0 && (
+                        <div className="space-y-3">
+                          <label className="block text-sm font-medium text-gray-700">
+                            <i className="ri-car-2-line mr-2 text-blue-600"></i>
+                            차량번호 입력
+                          </label>
+                          <div className="grid grid-cols-1 gap-3">
+                            {Array.from({ length: formData.parking_count }, (_, index) => (
+                              <div key={index} className="flex items-center space-x-3">
+                                <span className="text-sm font-medium text-gray-600 w-8">
+                                  {index + 1}번
+                                </span>
+                                <input
+                                  type="text"
+                                  value={formData.vehicle_numbers[index] || ''}
+                                  onChange={(e) => handleVehicleNumberChange(index, e.target.value)}
+                                  className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                                  placeholder={`차량번호 ${index + 1} (예: 12가3456)`}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-xs text-gray-500">
+                            <i className="ri-information-line mr-1"></i>
+                            차량번호는 한글, 숫자, 영문을 포함하여 입력해주세요 (예: 12가3456, 123가4567)
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

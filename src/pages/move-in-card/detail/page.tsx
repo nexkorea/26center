@@ -338,6 +338,21 @@ export default function MoveInCardDetail() {
                       <p className="text-gray-900">{moveInCard.parking_count}개</p>
                     </div>
                   )}
+                  {moveInCard.parking_needed && moveInCard.vehicle_numbers && moveInCard.vehicle_numbers.length > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">등록된 차량번호</label>
+                      <div className="space-y-2">
+                        {moveInCard.vehicle_numbers.map((vehicleNumber, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {index + 1}번
+                            </span>
+                            <span className="text-gray-900 font-mono">{vehicleNumber}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
