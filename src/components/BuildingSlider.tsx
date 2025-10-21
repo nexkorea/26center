@@ -6,22 +6,42 @@ interface BuildingSliderProps {
 
 const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
 
-  // 빌딩 이미지들
+  // 빌딩 이미지들 (Unsplash의 안정적인 이미지 사용)
   const buildingImages = [
     {
-      url: 'https://readdy.ai/api/search-image?query=Modern%20skyscraper%20building%20with%20glass%20facade%2C%20contemporary%20architecture%2C%20blue%20sky%20background%2C%20professional%20office%20building%2C%20clean%20minimalist%20design%2C%20bright%20natural%20lighting%2C%20urban%20cityscape%2C%20high-rise%20building&width=1200&height=600&seq=hero-building-1&orientation=landscape',
+      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
       alt: 'Modern Office Building 1'
     },
     {
-      url: 'https://readdy.ai/api/search-image?query=Luxury%20office%20building%20entrance%20with%20marble%20facade%2C%20elegant%20architecture%2C%20golden%20hour%20lighting%2C%20professional%20business%20environment%2C%20glass%20windows%2C%20modern%20design%2C%20corporate%20headquarters%2C%20prestigious%20building&width=1200&height=600&seq=hero-building-2&orientation=landscape',
+      url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80',
       alt: 'Luxury Office Building'
     },
     {
-      url: 'https://readdy.ai/api/search-image?query=Contemporary%20business%20complex%20with%20multiple%20buildings%2C%20modern%20architecture%2C%20glass%20and%20steel%20construction%2C%20urban%20skyline%2C%20professional%20environment%2C%20clean%20lines%2C%20sophisticated%20design%2C%20corporate%20campus&width=1200&height=600&seq=hero-building-3&orientation=landscape',
+      url: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
       alt: 'Business Complex'
     }
   ];
+
+  // 이미지 프리로딩
+  useEffect(() => {
+    const loadImages = async () => {
+      const loadPromises = buildingImages.map((image, index) => {
+        return new Promise<boolean>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          img.src = image.url;
+        });
+      });
+
+      const results = await Promise.all(loadPromises);
+      setLoadedImages(results);
+    };
+
+    loadImages();
+  }, [buildingImages]);
 
   // 3초마다 자동 슬라이딩
   useEffect(() => {
@@ -43,12 +63,21 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <div
-              className="w-full h-full bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: `url('${image.url}')`
-              }}
-            />
+            {loadedImages[index] ? (
+              <div
+                className="w-full h-full bg-cover bg-center bg-no-repeat"
+                style={{
+                  backgroundImage: `url('${image.url}')`
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <i className="ri-building-line text-6xl mb-4"></i>
+                  <p className="text-lg">빌딩 이미지 로딩 중...</p>
+                </div>
+              </div>
+            )}
             {/* 오버레이 */}
             <div className="absolute inset-0 bg-black bg-opacity-40"></div>
           </div>

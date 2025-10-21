@@ -113,7 +113,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-screen min-h-[600px] px-4 sm:px-6 lg:px-8">
+      <section className="relative h-[70vh] min-h-[500px] max-h-[800px] px-4 sm:px-6 lg:px-8">
         {/* 빌딩 이미지 슬라이더 */}
         <BuildingSlider className="absolute inset-0" />
         
