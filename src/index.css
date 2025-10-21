@@ -30,22 +30,30 @@
   background: transparent !important;
   border: none !important;
   outline: none !important;
+  cursor: pointer !important;
 }
 
 /* 로고 아이콘 스타일 */
-.logo-container > div:first-child {
+.logo-icon {
   background-color: #1E3A8A !important;
-  border-radius: 6px !important;
+  border-radius: 8px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3) !important;
-  transition: all 0.3s ease !important;
+  box-shadow: 0 3px 12px rgba(30, 58, 138, 0.25) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
 }
 
-.logo-container > div:first-child:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4) !important;
+.logo-icon:hover {
+  background-color: #1E40AF !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4) !important;
+}
+
+.logo-icon:active {
+  transform: translateY(-1px) scale(1.02) !important;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3) !important;
 }
 
 /* 로고 텍스트 스타일 */
@@ -58,20 +66,24 @@
   padding: 0 !important;
   opacity: 1 !important;
   visibility: visible !important;
-  transition: color 0.3s ease !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.logo-text:hover {
+.logo-container:hover .logo-text {
   color: #1E40AF !important;
+  transform: translateX(2px) !important;
 }
 
-/* SVG 아이콘 스타일 */
-.logo-container svg {
-  color: white !important;
-  transition: transform 0.3s ease !important;
+/* 건물 아이콘 SVG 스타일 */
+.building-icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.logo-container:hover svg {
-  transform: scale(1.05) !important;
-  background: white !important;
+.logo-container:hover .building-icon {
+  transform: scale(1.1) !important;
+}
+
+/* 로고 전체 호버 효과 */
+.logo-container:hover {
+  transform: translateY(-1px) !important;
 }

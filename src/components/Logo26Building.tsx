@@ -21,42 +21,60 @@ const Logo26Building: React.FC<Logo26BuildingProps> = ({
     >
       {/* 건물 모양 아이콘 */}
       <div 
+        className="logo-icon"
         style={{
           width: size,
           height: size,
           backgroundColor: '#1E3A8A',
-          borderRadius: '6px',
+          borderRadius: '8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          boxShadow: '0 2px 8px rgba(30, 58, 138, 0.3)'
+          boxShadow: '0 3px 12px rgba(30, 58, 138, 0.25)',
+          transition: 'all 0.3s ease',
+          cursor: 'pointer'
         }}
       >
-        {/* 건물 윤곽선 */}
+        {/* 건물 아이콘 SVG */}
         <svg 
-          width={size * 0.7} 
-          height={size * 0.7} 
-          viewBox="0 0 24 24" 
+          width={size * 0.75} 
+          height={size * 0.75} 
+          viewBox="0 0 32 32" 
           fill="none"
-          style={{ color: 'white' }}
+          className="building-icon"
         >
-          {/* 메인 건물 */}
-          <rect x="6" y="8" width="12" height="14" fill="currentColor" rx="1"/>
+          {/* 건물 기반 */}
+          <rect x="4" y="12" width="24" height="16" fill="white" rx="2"/>
           {/* 건물 지붕 */}
-          <path d="M4 8 L12 4 L20 8 L20 9 L4 9 Z" fill="currentColor"/>
-          {/* 창문들 */}
-          <rect x="8" y="11" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="11" y="11" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="14" y="11" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="8" y="15" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="11" y="15" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="14" y="15" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="8" y="19" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="11" y="19" width="2" height="2" fill="white" rx="0.5"/>
-          <rect x="14" y="19" width="2" height="2" fill="white" rx="0.5"/>
+          <path d="M2 12 L16 6 L30 12 L30 14 L2 14 Z" fill="white"/>
+          {/* 건물 외곽선 */}
+          <rect x="4" y="12" width="24" height="16" fill="none" stroke="white" strokeWidth="1.5" rx="2"/>
+          <path d="M2 12 L16 6 L30 12 L30 14 L2 14 Z" fill="none" stroke="white" strokeWidth="1.5"/>
+          
+          {/* 창문들 - 1층 */}
+          <rect x="7" y="15" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="12" y="15" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="17" y="15" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="22" y="15" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          
+          {/* 창문들 - 2층 */}
+          <rect x="7" y="20" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="12" y="20" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="17" y="20" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="22" y="20" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          
+          {/* 창문들 - 3층 */}
+          <rect x="7" y="25" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="12" y="25" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="17" y="25" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          <rect x="22" y="25" width="3" height="3" fill="#1E3A8A" rx="0.5"/>
+          
           {/* 입구 */}
-          <rect x="10" y="20" width="4" height="2" fill="white" rx="1"/>
+          <rect x="13" y="26" width="6" height="2" fill="#1E3A8A" rx="1"/>
+          
+          {/* 건물 번호 "26" */}
+          <text x="16" y="10" textAnchor="middle" fill="#1E3A8A" fontSize="6" fontWeight="bold" fontFamily="Arial, sans-serif">26</text>
         </svg>
       </div>
       
