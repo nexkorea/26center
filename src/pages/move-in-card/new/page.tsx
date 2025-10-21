@@ -114,12 +114,28 @@ export default function NewMoveInCard() {
           updated_at: new Date().toISOString()
         }, { onConflict: 'id' });
 
+      // DB에 저장할 데이터 준비 (컬럼이 없을 경우를 대비한 fallback)
+      const insertData = {
+        user_id: user.id,
+        company_name: formData.company_name,
+        business_type: formData.business_type,
+        tenant_type: formData.tenant_type || 'tenant', // fallback
+        floor_number: formData.floor_number,
+        room_number: formData.room_number,
+        move_in_date: formData.move_in_date,
+        contact_person: formData.contact_person,
+        contact_phone: formData.contact_phone,
+        contact_email: formData.contact_email,
+        employee_count: formData.employee_count,
+        parking_needed: formData.parking_needed,
+        parking_count: formData.parking_count,
+        vehicle_numbers: formData.vehicle_numbers || [], // fallback
+        special_requests: formData.special_requests
+      };
+
       const { error } = await supabase
         .from('move_in_cards')
-        .insert({
-          user_id: user.id,
-          ...formData
-        });
+        .insert(insertData);
 
       if (error) throw error;
 

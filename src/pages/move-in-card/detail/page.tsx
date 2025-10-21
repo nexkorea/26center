@@ -268,8 +268,8 @@ export default function MoveInCardDetail() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">입주자 유형</label>
                     <div className="flex items-center space-x-2">
-                      <i className={`${getTenantTypeIcon(moveInCard.tenant_type)} text-blue-600`}></i>
-                      <span className="text-gray-900 font-medium">{getTenantTypeText(moveInCard.tenant_type)}</span>
+                      <i className={`${getTenantTypeIcon(moveInCard.tenant_type || 'tenant')} text-blue-600`}></i>
+                      <span className="text-gray-900 font-medium">{getTenantTypeText(moveInCard.tenant_type || 'tenant')}</span>
                     </div>
                   </div>
                   <div>
@@ -342,7 +342,7 @@ export default function MoveInCardDetail() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">등록된 차량번호</label>
                       <div className="space-y-2">
-                        {moveInCard.vehicle_numbers.map((vehicleNumber, index) => (
+                        {(moveInCard.vehicle_numbers || []).map((vehicleNumber, index) => (
                           <div key={index} className="flex items-center space-x-2">
                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                               {index + 1}번

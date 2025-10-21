@@ -155,14 +155,28 @@ export default function EditMoveInCard() {
     setError('');
 
     try {
+      // DB에 저장할 데이터 준비 (컬럼이 없을 경우를 대비한 fallback)
+      const updateData = {
+        company_name: formData.company_name,
+        business_type: formData.business_type,
+        tenant_type: formData.tenant_type || 'tenant', // fallback
+        floor_number: formData.floor_number,
+        room_number: formData.room_number,
+        move_in_date: formData.move_in_date,
+        contact_person: formData.contact_person,
+        contact_phone: formData.contact_phone,
+        contact_email: formData.contact_email,
+        employee_count: formData.employee_count || 0,
+        parking_needed: formData.parking_needed || false,
+        parking_count: formData.parking_needed ? (formData.parking_count || 0) : 0,
+        vehicle_numbers: formData.vehicle_numbers || [], // fallback
+        special_requests: formData.special_requests,
+        updated_at: new Date().toISOString()
+      };
+
       const { error } = await supabase
         .from('move_in_cards')
-        .update({
-          ...formData,
-          employee_count: formData.employee_count || 0,
-          parking_count: formData.parking_needed ? (formData.parking_count || 0) : 0,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', id);
 
       if (error) throw error;
