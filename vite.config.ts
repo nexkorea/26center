@@ -67,8 +67,13 @@ export default defineConfig({
   ],
   base,
   build: {
-    sourcemap: true,
-    outDir: 'out',
+    sourcemap: false, // Cloudtype에서 소스맵 문제 방지
+    outDir: 'dist', // 표준 빌드 디렉토리로 변경
+    rollupOptions: {
+      output: {
+        manualChunks: undefined, // 청크 분할 비활성화로 Cloudtype 호환성 향상
+      }
+    }
   },
   resolve: {
     alias: {
