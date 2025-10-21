@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
+// 로컬 이미지 import
+import heroBuilding1 from '../assets/hero_building_1.jpeg';
+import heroBuilding2 from '../assets/hero_building_2.jpeg';
+import heroBuilding3 from '../assets/hero_building_3.jpeg';
+
 interface BuildingSliderProps {
   className?: string;
 }
@@ -8,18 +13,18 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
 
-  // 빌딩 이미지들 (안정적인 외부 이미지 사용)
+  // 빌딩 이미지들 (첨부해주신 로컬 이미지 사용)
   const buildingImages = [
     {
-      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+      url: heroBuilding1,
       alt: '26센터 건물 로비 - 현대적인 대형 건물의 넓은 로비 공간'
     },
     {
-      url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+      url: heroBuilding2,
       alt: '26센터 건물 내부 - 세련된 건축 디테일과 자연 채광'
     },
     {
-      url: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+      url: heroBuilding3,
       alt: '26센터 건물 중앙홀 - 메자닌과 입구가 조화된 현대적 공간'
     }
   ];
@@ -30,20 +35,13 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
       const loadPromises = buildingImages.map((image, index) => {
         return new Promise<boolean>((resolve) => {
           const img = new Image();
-          img.onload = () => {
-            console.log(`이미지 ${index + 1} 로드 성공:`, image.alt);
-            resolve(true);
-          };
-          img.onerror = (error) => {
-            console.error(`이미지 ${index + 1} 로드 실패:`, image.alt, error);
-            resolve(false);
-          };
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
           img.src = image.url;
         });
       });
 
       const results = await Promise.all(loadPromises);
-      console.log('이미지 로딩 결과:', results);
       setLoadedImages(results);
     };
 
@@ -65,19 +63,6 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
     <div className={`relative overflow-hidden ${className}`}>
       {/* 슬라이드 컨테이너 */}
       <div className="relative w-full h-full">
-        {/* 로딩 상태 표시 */}
-        {loadedImages.length === 0 && (
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 flex items-center justify-center">
-            <div className="text-white text-center animate-pulse">
-              <div className="w-16 h-16 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                <i className="ri-building-line text-3xl"></i>
-              </div>
-              <p className="text-lg font-medium">26센터 이미지 로딩 중...</p>
-              <div className="mt-2 w-8 h-1 bg-white bg-opacity-30 rounded-full mx-auto"></div>
-            </div>
-          </div>
-        )}
-
         {buildingImages.map((image, index) => (
           <div
             key={index}
@@ -94,13 +79,13 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
                 }}
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center">
-                <div className="text-white text-center">
+              <div className="w-full h-full bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 flex items-center justify-center">
+                <div className="text-white text-center animate-pulse">
                   <div className="w-16 h-16 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                    <i className="ri-error-warning-line text-3xl"></i>
+                    <i className="ri-building-line text-3xl"></i>
                   </div>
-                  <p className="text-lg font-medium">이미지 로드 실패</p>
-                  <p className="text-sm text-gray-300 mt-2">{image.alt}</p>
+                  <p className="text-lg font-medium">26센터 이미지 로딩 중...</p>
+                  <div className="mt-2 w-8 h-1 bg-white bg-opacity-30 rounded-full mx-auto"></div>
                 </div>
               </div>
             )}
