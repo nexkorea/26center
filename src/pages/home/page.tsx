@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import Logo26Building from '../../components/Logo26Building';
 import NoticeList from '../../components/NoticeList';
+import BuildingSlider from '../../components/BuildingSlider';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -112,69 +113,65 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://readdy.ai/api/search-image?query=Modern%20office%20building%20entrance%20lobby%20with%20glass%20windows%2C%20professional%20business%20environment%2C%20clean%20minimalist%20design%2C%20bright%20natural%20lighting%2C%20contemporary%20architecture%2C%20people%20walking%20in%20business%20attire%2C%20marble%20floors%2C%20reception%20desk%20area&width=1200&height=600&seq=hero-building&orientation=landscape')`
-          }}
-        >
-          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        </div>
+      <section className="relative h-screen min-h-[600px] px-4 sm:px-6 lg:px-8">
+        {/* 빌딩 이미지 슬라이더 */}
+        <BuildingSlider className="absolute inset-0" />
         
-        <div className="relative max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            26빌딩 입주카드 시스템
-          </h1>
-          <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto">
-            간편하고 체계적인 입주자 정보 관리 시스템으로 효율적인 빌딩 운영을 시작하세요
-          </p>
-          {!isLoggedIn ? (
-            <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-              입주카드를 작성하여 입주 신청을 시작하세요 (로그인 필요)
+        <div className="relative max-w-7xl mx-auto text-center flex flex-col justify-center h-full">
+          <div>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-lg">
+              26센터 입주카드 시스템
+            </h1>
+            <p className="text-xl md:text-2xl lg:text-3xl text-white mb-8 max-w-4xl mx-auto drop-shadow-md">
+              간편하고 체계적인 입주자 정보 관리 시스템으로 효율적인 빌딩 운영을 시작하세요
             </p>
-          ) : (
-            hasMoveInCard ? (
-              <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-                대시보드에서 입주카드를 관리하고 새로운 입주카드를 작성할 수 있습니다
-              </p>
-            ) : (
-              <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-                입주카드를 작성하여 입주 신청을 시작하세요
-              </p>
-            )
-          )}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {!isLoggedIn ? (
-              <Link 
-                to="/move-in-card/new" 
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer whitespace-nowrap inline-block"
-              >
-                입주카드 작성
-              </Link>
+              <p className="text-lg lg:text-xl text-blue-100 mb-8 max-w-2xl mx-auto drop-shadow-md">
+                입주카드를 작성하여 입주 신청을 시작하세요 (로그인 필요)
+              </p>
             ) : (
               hasMoveInCard ? (
-                <Link 
-                  to="/dashboard" 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer whitespace-nowrap inline-block"
-                >
-                  대시보드로 이동
-                </Link>
+                <p className="text-lg lg:text-xl text-blue-100 mb-8 max-w-2xl mx-auto drop-shadow-md">
+                  대시보드에서 입주카드를 관리하고 새로운 입주카드를 작성할 수 있습니다
+                </p>
               ) : (
-                <Link 
-                  to="/move-in-card/new" 
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer whitespace-nowrap inline-block"
-                >
-                  새 입주카드 작성
-                </Link>
+                <p className="text-lg lg:text-xl text-blue-100 mb-8 max-w-2xl mx-auto drop-shadow-md">
+                  입주카드를 작성하여 입주 신청을 시작하세요
+                </p>
               )
             )}
-            <Link 
-              to="/admin" 
-              className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer whitespace-nowrap inline-block"
-            >
-              관리자 로그인
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {!isLoggedIn ? (
+                <Link 
+                  to="/move-in-card/new" 
+                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl text-lg font-semibold cursor-pointer whitespace-nowrap inline-block shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                >
+                  입주카드 작성
+                </Link>
+              ) : (
+                hasMoveInCard ? (
+                  <Link 
+                    to="/dashboard" 
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold cursor-pointer whitespace-nowrap inline-block shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  >
+                    대시보드로 이동
+                  </Link>
+                ) : (
+                  <Link 
+                    to="/move-in-card/new" 
+                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl text-lg font-semibold cursor-pointer whitespace-nowrap inline-block shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  >
+                    새 입주카드 작성
+                  </Link>
+                )
+              )}
+              <Link 
+                to="/admin" 
+                className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-4 rounded-xl text-lg font-semibold cursor-pointer whitespace-nowrap inline-block shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                관리자 로그인
+              </Link>
+            </div>
           </div>
         </div>
       </section>
