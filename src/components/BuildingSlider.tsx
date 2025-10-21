@@ -89,7 +89,15 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
   const allImagesLoaded = loadedImages.length === buildingImages.length && loadedImages.every(Boolean);
 
   return (
-    <div className={`relative w-full h-full overflow-hidden z-0 ${className}`}>
+    <div 
+      className={`relative w-full h-full overflow-hidden z-0 ${className}`}
+      style={{
+        width: '100%',
+        height: '100%',
+        margin: 0,
+        padding: 0
+      }}
+    >
       {/* 로딩 상태 */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
@@ -111,11 +119,17 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
             } ${!loadedImages[index] ? 'hidden' : ''}`}
           >
             {/* 이미지 */}
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full overflow-hidden">
               <img
                 src={image.url}
                 alt={image.alt}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
                 onError={(e) => {
                   console.error('이미지 로드 실패:', image.title);
                   (e.target as HTMLImageElement).style.display = 'none';
