@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { supabase, type MoveInCard, type Profile } from '../../../lib/supabase';
 import Logo26Building from '../../../components/Logo26Building';
+import AdminNotesModal from '../../../components/AdminNotesModal';
 
 export default function MoveInCardDetail() {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +13,8 @@ export default function MoveInCardDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<MoveInCard | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -139,6 +142,56 @@ export default function MoveInCardDetail() {
         return 'ri-question-line';
       default:
         return 'ri-question-line';
+    }
+  };
+
+  /**
+   * 입주카드 상태 업데이트
+   */
+  const updateCardStatus = async (cardId: string, status: 'approved' | 'rejected', adminNotes?: string) => {
+    try {
+      const { error } = await supabase
+        .from('move_in_cards')
+        .update({ 
+          status, 
+          admin_notes: adminNotes || null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', cardId);
+
+      if (error) throw error;
+
+      // 성공 시 관리자 페이지로 이동
+      navigate('/admin');
+    } catch (error) {
+      console.error('Error updating status:', error);
+      setError('상태 업데이트에 실패했습니다.');
+    }
+  };
+
+  /**
+   * 승인 처리
+   */
+  const handleApprove = (card: MoveInCard) => {
+    setSelectedCard({ ...card, action: 'approve' } as any);
+    setIsNotesModalOpen(true);
+  };
+
+  /**
+   * 반려 처리
+   */
+  const handleReject = (card: MoveInCard) => {
+    setSelectedCard({ ...card, action: 'reject' } as any);
+    setIsNotesModalOpen(true);
+  };
+
+  /**
+   * 관리자 메모 저장
+   */
+  const handleSaveNotes = (notes: string) => {
+    if (selectedCard) {
+      const action = (selectedCard as any).action;
+      updateCardStatus(selectedCard.id, action === 'approve' ? 'approved' : 'rejected', notes);
     }
   };
 
@@ -406,20 +459,14 @@ export default function MoveInCardDetail() {
               {isAdmin && moveInCard.status === 'pending' && (
                 <div className="flex space-x-3">
                   <button
-                    onClick={() => {
-                      // 승인 로직 (모달 또는 직접 처리)
-                      console.log('승인 처리:', moveInCard.id);
-                    }}
+                    onClick={() => handleApprove(moveInCard)}
                     className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors flex items-center space-x-2"
                   >
                     <i className="ri-check-line"></i>
                     <span>승인</span>
                   </button>
                   <button
-                    onClick={() => {
-                      // 반려 로직 (모달 또는 직접 처리)
-                      console.log('반려 처리:', moveInCard.id);
-                    }}
+                    onClick={() => handleReject(moveInCard)}
                     className="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors flex items-center space-x-2"
                   >
                     <i className="ri-close-line"></i>
@@ -428,9 +475,25 @@ export default function MoveInCardDetail() {
                 </div>
               )}
             </div>
-          </div>
         </div>
       </div>
+    </div>
+
+    {/* 관리자 메모 모달 */}
+    {isNotesModalOpen && selectedCard && (
+      <AdminNotesModal
+        isOpen={isNotesModalOpen}
+        onClose={() => {
+          setIsNotesModalOpen(false);
+          setSelectedCard(null);
+        }}
+        onSave={handleSaveNotes}
+        title={`입주카드 ${(selectedCard as any).action === 'approve' ? '승인' : '반려'}`}
+        subtitle={`${selectedCard.company_name} - ${selectedCard.floor_number}층 ${selectedCard.room_number}호`}
+        currentNotes={selectedCard.admin_notes || ''}
+        actionType={(selectedCard as any).action}
+      />
+    )}
     </div>
   );
 }
