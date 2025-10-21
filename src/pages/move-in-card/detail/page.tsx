@@ -488,10 +488,9 @@ export default function MoveInCardDetail() {
           setSelectedCard(null);
         }}
         onSave={handleSaveNotes}
-        title={`입주카드 ${(selectedCard as any).action === 'approve' ? '승인' : '반려'}`}
-        subtitle={`${selectedCard.company_name} - ${selectedCard.floor_number}층 ${selectedCard.room_number}호`}
         currentNotes={selectedCard.admin_notes || ''}
-        actionType={(selectedCard as any).action}
+        companyName={`${selectedCard.company_name} - ${selectedCard.floor_number}층 ${selectedCard.room_number}호`}
+        action={(selectedCard as any).action}
       />
     )}
     </div>
