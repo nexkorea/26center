@@ -455,6 +455,19 @@ export default function MoveInCardDetail() {
                 </button>
               </div>
               
+              {/* 사용자용 수정 버튼 */}
+              {!isAdmin && moveInCard.status === 'pending' && (
+                <div className="flex space-x-3">
+                  <Link
+                    to={`/move-in-card/edit/${moveInCard.id}`}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                  >
+                    <i className="ri-edit-line"></i>
+                    <span>수정</span>
+                  </Link>
+                </div>
+              )}
+              
               {/* 관리자 전용 액션 버튼 */}
               {isAdmin && moveInCard.status === 'pending' && (
                 <div className="flex space-x-3">

@@ -57,8 +57,20 @@ export default function EditMoveInCard() {
 
       setIsAdmin(userProfile?.role === 'admin');
 
-      // 관리자가 아니면 접근 거부
-      if (userProfile?.role !== 'admin') {
+      // 입주카드 소유자 확인
+      const { data: cardData } = await supabase
+        .from('move_in_cards')
+        .select('user_id')
+        .eq('id', id)
+        .single();
+
+      if (!cardData) {
+        navigate('/dashboard');
+        return;
+      }
+
+      // 관리자가 아니고 입주카드 소유자가 아니면 접근 거부
+      if (userProfile?.role !== 'admin' && cardData.user_id !== user.id) {
         navigate('/dashboard');
         return;
       }
@@ -181,7 +193,8 @@ export default function EditMoveInCard() {
 
       if (error) throw error;
 
-      navigate('/admin');
+      // 수정 완료 후 상세페이지로 이동
+      navigate(`/move-in-card/detail/${id}`);
     } catch (error: any) {
       setError(error.message || '입주카드 수정에 실패했습니다.');
     } finally {

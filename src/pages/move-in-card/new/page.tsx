@@ -133,14 +133,16 @@ export default function NewMoveInCard() {
         special_requests: formData.special_requests
       };
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('move_in_cards')
-        .insert(insertData);
+        .insert(insertData)
+        .select('id')
+        .single();
 
       if (error) throw error;
 
-      // 성공 시 대시보드로 이동
-      navigate('/dashboard');
+      // 성공 시 작성된 입주카드 상세페이지로 이동
+      navigate(`/move-in-card/detail/${data.id}`);
     } catch (error: any) {
       setError(error.message || '입주카드 작성에 실패했습니다.');
     } finally {

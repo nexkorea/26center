@@ -45,6 +45,12 @@ export default function Dashboard() {
 
       if (cardsData) {
         setMoveInCards(cardsData);
+        
+        // 입주카드가 1장만 있으면 상세페이지로 리다이렉트
+        if (cardsData.length === 1) {
+          navigate(`/move-in-card/detail/${cardsData[0].id}`);
+          return;
+        }
       }
     } catch (error) {
       console.error('Error:', error);
