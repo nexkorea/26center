@@ -125,13 +125,15 @@ export default function Dashboard() {
                   상세보기
                 </Link>
               )}
-              <Link
-                to="/move-in-card/new"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
-              >
-                <i className="ri-add-line mr-2"></i>
-                새 입주카드 작성
-              </Link>
+              {moveInCards.length === 0 && (
+                <Link
+                  to="/move-in-card/new"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                >
+                  <i className="ri-add-line mr-2"></i>
+                  새 입주카드 작성
+                </Link>
+              )}
             </div>
           </div>
 
