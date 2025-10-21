@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tailwind 기본 스타일 오버라이드 */
+* {
+  box-sizing: border-box;
+}
+
+/* 로고 관련 모든 요소 강제 흰색 배경 */
+div[class*="logo"] {
+  background-color: white !important;
+  background: white !important;
+}
+
+/* 로고 이미지 흰색 배경 강제 적용 */
+img[alt="26빌딩 로고"] {
+  background-color: white !important;
+  background: white !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  object-fit: contain !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+/* 로고 컨테이너 흰색 배경 */
+.logo-container {
+  background-color: white !important;
+  background: white !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* 로고 텍스트 특이한 폰트 스타일 */
+.logo-text {
+  font-family: 'Orbitron', 'Black Han Sans', 'Noto Sans KR', sans-serif !important;
+  font-weight: 900 !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1) !important;
+  letter-spacing: 1px !important;
+  color: #1E3A8A !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 모든 로고 관련 요소 흰색 배경 강제 적용 */
+.logo-container * {
+  background-color: transparent !important;
+  background: none !important;
+}
+
+.logo-container::before,
+.logo-container::after {
+  background-color: white !important;
+  background: white !important;
+}
