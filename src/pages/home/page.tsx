@@ -117,8 +117,8 @@ export default function Home() {
         {/* 빌딩 이미지 슬라이더 */}
         <BuildingSlider className="absolute inset-0" />
         
-        <div className="relative max-w-7xl mx-auto text-center flex flex-col justify-center h-full">
-          <div>
+        <div className="relative max-w-7xl mx-auto text-center flex flex-col justify-start h-full pt-20">
+          <div className="z-10">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-lg">
               26센터 입주카드 시스템
             </h1>
