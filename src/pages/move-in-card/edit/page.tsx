@@ -16,6 +16,7 @@ export default function EditMoveInCard() {
   const [formData, setFormData] = useState({
     company_name: '',
     business_type: '',
+    tenant_type: 'tenant' as 'owner' | 'tenant' | 'other', // 기본값: 임차인
     floor_number: '',
     room_number: '',
     move_in_date: '',
@@ -86,6 +87,7 @@ export default function EditMoveInCard() {
       setFormData({
         company_name: data.company_name || '',
         business_type: data.business_type || '',
+        tenant_type: data.tenant_type || 'tenant', // 기본값 설정
         floor_number: data.floor_number || '',
         room_number: data.room_number || '',
         move_in_date: data.move_in_date || '',

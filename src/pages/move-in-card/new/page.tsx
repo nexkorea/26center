@@ -18,6 +18,7 @@ export default function NewMoveInCard() {
   const [formData, setFormData] = useState({
     company_name: '',
     business_type: '',
+    tenant_type: 'tenant' as 'owner' | 'tenant' | 'other', // 기본값: 임차인
     floor_number: '',
     room_number: '',
     move_in_date: '',
@@ -191,7 +192,7 @@ export default function NewMoveInCard() {
       case 1:
         return !!(formData.company_name && formData.business_type);
       case 2:
-        return !!(formData.floor_number && formData.room_number && formData.move_in_date);
+        return !!(formData.tenant_type && formData.floor_number && formData.room_number && formData.move_in_date);
       case 3:
         return !!(formData.contact_person && formData.contact_phone && formData.contact_email);
       case 4:
@@ -382,59 +383,184 @@ export default function NewMoveInCard() {
             {/* 단계 2: 입주 정보 */}
             {currentStep === 2 && (
               <div className="p-8 animate-fadeIn">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* 층수 */}
+                <div className="space-y-6">
+                  {/* 입주자 유형 */}
                   <div className="relative">
-                    <label htmlFor="floor_number" className="block text-sm font-semibold text-gray-700 mb-2">
-                      <i className="ri-building-2-line mr-2 text-blue-600"></i>
-                      층수 *
+                    <label htmlFor="tenant_type" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <i className="ri-user-settings-line mr-2 text-blue-600"></i>
+                      입주자 유형 *
                     </label>
-                    <input
-                      type="text"
-                      name="floor_number"
-                      id="floor_number"
-                      required
-                      value={formData.floor_number}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
-                      placeholder="예: 5층"
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* 소유주 */}
+                      <label className={`
+                        relative flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all
+                        ${formData.tenant_type === 'owner' 
+                          ? 'border-blue-500 bg-blue-50 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        }
+                      `}>
+                        <input
+                          type="radio"
+                          name="tenant_type"
+                          value="owner"
+                          checked={formData.tenant_type === 'owner'}
+                          onChange={handleChange}
+                          className="sr-only"
+                        />
+                        <div className="flex items-center space-x-3">
+                          <div className={`
+                            w-5 h-5 rounded-full border-2 flex items-center justify-center
+                            ${formData.tenant_type === 'owner' 
+                              ? 'border-blue-500 bg-blue-500' 
+                              : 'border-gray-300'
+                            }
+                          `}>
+                            {formData.tenant_type === 'owner' && (
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <i className="ri-home-4-line text-lg text-blue-600"></i>
+                              <span className="font-semibold text-gray-900">소유주</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">건물을 소유하고 있는 경우</p>
+                          </div>
+                        </div>
+                      </label>
+
+                      {/* 임차인 */}
+                      <label className={`
+                        relative flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all
+                        ${formData.tenant_type === 'tenant' 
+                          ? 'border-blue-500 bg-blue-50 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        }
+                      `}>
+                        <input
+                          type="radio"
+                          name="tenant_type"
+                          value="tenant"
+                          checked={formData.tenant_type === 'tenant'}
+                          onChange={handleChange}
+                          className="sr-only"
+                        />
+                        <div className="flex items-center space-x-3">
+                          <div className={`
+                            w-5 h-5 rounded-full border-2 flex items-center justify-center
+                            ${formData.tenant_type === 'tenant' 
+                              ? 'border-blue-500 bg-blue-500' 
+                              : 'border-gray-300'
+                            }
+                          `}>
+                            {formData.tenant_type === 'tenant' && (
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <i className="ri-building-line text-lg text-blue-600"></i>
+                              <span className="font-semibold text-gray-900">임차인</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">건물을 임대하여 사용하는 경우</p>
+                          </div>
+                        </div>
+                      </label>
+
+                      {/* 기타 */}
+                      <label className={`
+                        relative flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all
+                        ${formData.tenant_type === 'other' 
+                          ? 'border-blue-500 bg-blue-50 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        }
+                      `}>
+                        <input
+                          type="radio"
+                          name="tenant_type"
+                          value="other"
+                          checked={formData.tenant_type === 'other'}
+                          onChange={handleChange}
+                          className="sr-only"
+                        />
+                        <div className="flex items-center space-x-3">
+                          <div className={`
+                            w-5 h-5 rounded-full border-2 flex items-center justify-center
+                            ${formData.tenant_type === 'other' 
+                              ? 'border-blue-500 bg-blue-500' 
+                              : 'border-gray-300'
+                            }
+                          `}>
+                            {formData.tenant_type === 'other' && (
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <i className="ri-question-line text-lg text-blue-600"></i>
+                              <span className="font-semibold text-gray-900">기타</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">기타 입주 형태인 경우</p>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
                   </div>
 
-                  {/* 호수 */}
-                  <div className="relative">
-                    <label htmlFor="room_number" className="block text-sm font-semibold text-gray-700 mb-2">
-                      <i className="ri-door-line mr-2 text-blue-600"></i>
-                      호수 *
-                    </label>
-                    <input
-                      type="text"
-                      name="room_number"
-                      id="room_number"
-                      required
-                      value={formData.room_number}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
-                      placeholder="예: 501호"
-                    />
-                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* 층수 */}
+                    <div className="relative">
+                      <label htmlFor="floor_number" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <i className="ri-building-2-line mr-2 text-blue-600"></i>
+                        층수 *
+                      </label>
+                      <input
+                        type="text"
+                        name="floor_number"
+                        id="floor_number"
+                        required
+                        value={formData.floor_number}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                        placeholder="예: 5층"
+                      />
+                    </div>
 
-                  {/* 입주 예정일 */}
-                  <div className="relative md:col-span-2">
-                    <label htmlFor="move_in_date" className="block text-sm font-semibold text-gray-700 mb-2">
-                      <i className="ri-calendar-check-line mr-2 text-blue-600"></i>
-                      입주 예정일 *
-                    </label>
-                    <input
-                      type="date"
-                      name="move_in_date"
-                      id="move_in_date"
-                      required
-                      value={formData.move_in_date}
-                      onChange={handleChange}
-                      min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900"
-                    />
+                    {/* 호수 */}
+                    <div className="relative">
+                      <label htmlFor="room_number" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <i className="ri-door-line mr-2 text-blue-600"></i>
+                        호수 *
+                      </label>
+                      <input
+                        type="text"
+                        name="room_number"
+                        id="room_number"
+                        required
+                        value={formData.room_number}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                        placeholder="예: 501호"
+                      />
+                    </div>
+
+                    {/* 입주 예정일 */}
+                    <div className="relative md:col-span-2">
+                      <label htmlFor="move_in_date" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <i className="ri-calendar-check-line mr-2 text-blue-600"></i>
+                        입주 예정일 *
+                      </label>
+                      <input
+                        type="date"
+                        name="move_in_date"
+                        id="move_in_date"
+                        required
+                        value={formData.move_in_date}
+                        onChange={handleChange}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

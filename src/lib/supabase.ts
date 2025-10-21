@@ -21,6 +21,7 @@ export type MoveInCard = {
   user_id: string;
   company_name: string;
   business_type: string;
+  tenant_type: 'owner' | 'tenant' | 'other'; // 입주자 유형: 소유주, 임차인, 기타
   floor_number: string;
   room_number: string;
   move_in_date: string;

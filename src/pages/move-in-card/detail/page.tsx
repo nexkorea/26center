@@ -116,6 +116,32 @@ export default function MoveInCardDetail() {
     }
   };
 
+  const getTenantTypeText = (tenantType: string) => {
+    switch (tenantType) {
+      case 'owner':
+        return '소유주';
+      case 'tenant':
+        return '임차인';
+      case 'other':
+        return '기타';
+      default:
+        return '미분류';
+    }
+  };
+
+  const getTenantTypeIcon = (tenantType: string) => {
+    switch (tenantType) {
+      case 'owner':
+        return 'ri-home-4-line';
+      case 'tenant':
+        return 'ri-building-line';
+      case 'other':
+        return 'ri-question-line';
+      default:
+        return 'ri-question-line';
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -239,6 +265,13 @@ export default function MoveInCardDetail() {
                   입주 정보
                 </h2>
                 <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">입주자 유형</label>
+                    <div className="flex items-center space-x-2">
+                      <i className={`${getTenantTypeIcon(moveInCard.tenant_type)} text-blue-600`}></i>
+                      <span className="text-gray-900 font-medium">{getTenantTypeText(moveInCard.tenant_type)}</span>
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">층수</label>
                     <p className="text-gray-900 font-medium">{moveInCard.floor_number}층</p>
