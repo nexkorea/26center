@@ -115,10 +115,14 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-[70vh] min-h-[500px] max-h-[800px] px-4 sm:px-6 lg:px-8">
         {/* 빌딩 이미지 슬라이더 */}
-        <BuildingSlider className="absolute inset-0" />
+        <BuildingSlider className="absolute inset-0 z-0" />
         
-        <div className="relative max-w-7xl mx-auto text-center flex flex-col justify-start h-full pt-20 z-20">
-          <div className="relative z-30">
+        {/* Hero 텍스트 오버레이 */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          {/* 배경 오버레이 */}
+          <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+          
+          <div className="relative max-w-7xl mx-auto text-center px-4 z-20">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-lg">
               26센터 입주카드 시스템
             </h1>
