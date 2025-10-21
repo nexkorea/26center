@@ -45,12 +45,6 @@ export default function Dashboard() {
 
       if (cardsData) {
         setMoveInCards(cardsData);
-        
-        // 입주카드가 1장만 있으면 상세페이지로 리다이렉트
-        if (cardsData.length === 1) {
-          navigate(`/move-in-card/detail/${cardsData[0].id}`);
-          return;
-        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -121,13 +115,24 @@ export default function Dashboard() {
           {/* 상단 액션 */}
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">내 입주카드</h2>
-            <Link
-              to="/move-in-card/new"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
-            >
-              <i className="ri-add-line mr-2"></i>
-              새 입주카드 작성
-            </Link>
+            <div className="flex space-x-3">
+              {moveInCards.length === 1 && (
+                <Link
+                  to={`/move-in-card/detail/${moveInCards[0].id}`}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                >
+                  <i className="ri-eye-line mr-2"></i>
+                  상세보기
+                </Link>
+              )}
+              <Link
+                to="/move-in-card/new"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+              >
+                <i className="ri-add-line mr-2"></i>
+                새 입주카드 작성
+              </Link>
+            </div>
           </div>
 
           {/* 입주카드 목록 */}

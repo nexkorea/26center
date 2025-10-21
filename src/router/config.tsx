@@ -46,6 +46,10 @@ const routes: RouteObject[] = [
     element: <MoveInCardDetail />,
   },
   {
+    path: '/move-in-card/detail/:id',
+    element: <MoveInCardDetail />,
+  },
+  {
     path: '/move-in-card/edit/:id',
     element: <EditMoveInCard />,
   },
