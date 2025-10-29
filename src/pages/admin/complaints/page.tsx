@@ -13,7 +13,10 @@ export default function AdminComplaintsPage() {
   const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [responseText, setResponseText] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [complaintToDelete, setComplaintToDelete] = useState<Complaint | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -131,6 +134,7 @@ export default function AdminComplaintsPage() {
   const handleResponse = (complaint: Complaint) => {
     setSelectedComplaint(complaint);
     setResponseText(complaint.admin_response || '');
+    setSelectedStatus(complaint.status);
     setIsResponseModalOpen(true);
   };
 
@@ -141,15 +145,21 @@ export default function AdminComplaintsPage() {
       setSubmitting(true);
       setError('');
 
+      const updateData: any = {
+        admin_id: user.id,
+        response_date: new Date().toISOString(),
+        status: selectedStatus,
+        updated_at: new Date().toISOString()
+      };
+
+      // 답변이 있는 경우에만 admin_response 업데이트
+      if (responseText.trim()) {
+        updateData.admin_response = responseText.trim();
+      }
+
       const { error } = await supabase
         .from('complaints')
-        .update({
-          admin_response: responseText.trim(),
-          admin_id: user.id,
-          response_date: new Date().toISOString(),
-          status: responseText.trim() ? 'resolved' : 'in_progress',
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', selectedComplaint.id);
 
       if (error) throw error;
@@ -158,6 +168,7 @@ export default function AdminComplaintsPage() {
       setIsResponseModalOpen(false);
       setSelectedComplaint(null);
       setResponseText('');
+      setSelectedStatus('');
     } catch (error) {
       console.error('답변 제출 오류:', error);
       setError('답변 제출에 실패했습니다.');
@@ -182,6 +193,35 @@ export default function AdminComplaintsPage() {
     } catch (error) {
       console.error('상태 변경 오류:', error);
       setError('상태 변경에 실패했습니다.');
+    }
+  };
+
+  // 민원 삭제 모달 열기
+  const deleteComplaint = (complaint: Complaint) => {
+    setComplaintToDelete(complaint);
+    setIsDeleteModalOpen(true);
+  };
+
+  // 민원 삭제 확인
+  const confirmDeleteComplaint = async () => {
+    if (!complaintToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('complaints')
+        .delete()
+        .eq('id', complaintToDelete.id);
+
+      if (error) throw error;
+
+      // 목록 새로고침
+      await loadComplaints();
+      setIsDeleteModalOpen(false);
+      setComplaintToDelete(null);
+      setError('');
+    } catch (error) {
+      console.error('민원 삭제 오류:', error);
+      setError('민원 삭제에 실패했습니다.');
     }
   };
 
@@ -459,6 +499,15 @@ export default function AdminComplaintsPage() {
                           <i className="ri-checkbox-circle-line"></i>
                         </button>
                       )}
+                      
+                      {/* 삭제 버튼 */}
+                      <button
+                        onClick={() => deleteComplaint(complaint)}
+                        className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
+                        title="삭제하기"
+                      >
+                        <i className="ri-delete-bin-line"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -483,6 +532,7 @@ export default function AdminComplaintsPage() {
                     setIsResponseModalOpen(false);
                     setSelectedComplaint(null);
                     setResponseText('');
+                    setSelectedStatus('');
                   }}
                   className="text-white hover:text-gray-200 transition-colors"
                 >
@@ -516,12 +566,34 @@ export default function AdminComplaintsPage() {
                 />
               </div>
 
+              <div className="mb-6">
+                <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+                  처리 상태 <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="status"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  disabled={submitting}
+                >
+                  <option value="pending">접수됨</option>
+                  <option value="in_progress">처리중</option>
+                  <option value="resolved">해결됨</option>
+                  <option value="closed">종료됨</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  민원의 현재 처리 상태를 선택하세요
+                </p>
+              </div>
+
               <div className="flex space-x-3">
                 <button
                   onClick={() => {
                     setIsResponseModalOpen(false);
                     setSelectedComplaint(null);
                     setResponseText('');
+                    setSelectedStatus('');
                   }}
                   className="flex-1 px-4 py-3 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors duration-200"
                 >
@@ -543,6 +615,87 @@ export default function AdminComplaintsPage() {
                       답변 제출
                     </>
                   )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && complaintToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100">
+            <div className="bg-red-500 text-white p-6 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold">민원 삭제</h2>
+                  <p className="text-red-100 text-sm mt-1">{complaintToDelete.title}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setIsDeleteModalOpen(false);
+                    setComplaintToDelete(null);
+                  }}
+                  className="text-white hover:text-gray-200 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-6">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                    <i className="ri-delete-bin-line text-3xl text-red-600"></i>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">
+                  정말로 이 민원을 삭제하시겠습니까?
+                </h3>
+                <p className="text-gray-600 text-center">
+                  삭제된 민원은 복구할 수 없습니다.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-start">
+                    <span className="font-medium text-gray-700 w-20">제목:</span>
+                    <span className="text-gray-900">{complaintToDelete.title}</span>
+                  </div>
+                  <div className="flex items-start">
+                    <span className="font-medium text-gray-700 w-20">카테고리:</span>
+                    <span className="text-gray-900">{getCategoryText(complaintToDelete.category)}</span>
+                  </div>
+                  <div className="flex items-start">
+                    <span className="font-medium text-gray-700 w-20">상태:</span>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(complaintToDelete.status)}`}>
+                      {getStatusText(complaintToDelete.status)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    setIsDeleteModalOpen(false);
+                    setComplaintToDelete(null);
+                  }}
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors duration-200"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={confirmDeleteComplaint}
+                  className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-all duration-200 transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <i className="ri-delete-bin-line"></i>
+                  삭제하기
                 </button>
               </div>
             </div>

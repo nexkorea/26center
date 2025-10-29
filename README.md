@@ -22,12 +22,23 @@
   - 모던한 카드 UI
 - ✅ 본인 입주카드 조회 및 상태 확인
 - ✅ 관리자 메모 확인
+- ✅ 민원 접수 기능
+  - 다양한 카테고리 분류 (시설, 보안, 소음, 주차 등)
+  - 우선순위 설정 (낮음/보통/높음/긴급)
+  - 익명 접수 옵션
+- ✅ 본인 민원 조회 및 답변 확인
 
 ### 관리자 기능
 - ✅ 전체 입주카드 조회
 - ✅ 상태별 필터링 (검토중/승인/반려)
 - ✅ 입주카드 승인/반려 처리
 - ✅ 관리자 메모 작성
+- ✅ 민원 관리
+  - 전체 민원 조회 및 상태별 필터링
+  - 민원 답변 작성
+  - **처리 상태 변경** (접수됨/처리중/해결됨/종료됨)
+  - **악성민원 삭제 기능**
+  - 우선순위별 관리
 
 ### UI/UX 특징
 - 🎨 **현대적인 디자인**: 그라데이션, 카드 레이아웃, 부드러운 애니메이션
@@ -165,6 +176,68 @@ CREATE POLICY "Admins can view all cards"
 -- 관리자는 모든 입주카드 수정 가능
 CREATE POLICY "Admins can update all cards"
   ON move_in_cards FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role = 'admin'
+    )
+  );
+```
+
+#### 3. complaints 테이블
+
+```sql
+CREATE TABLE complaints (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  category TEXT NOT NULL CHECK (category IN ('facility', 'security', 'noise', 'parking', 'elevator', 'cleaning', 'management', 'other')),
+  priority TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'in_progress', 'resolved', 'closed')),
+  is_anonymous BOOLEAN DEFAULT FALSE,
+  admin_response TEXT,
+  admin_id UUID REFERENCES profiles(id),
+  response_date TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS 정책
+ALTER TABLE complaints ENABLE ROW LEVEL SECURITY;
+
+-- 사용자는 본인의 민원만 조회 가능
+CREATE POLICY "Users can view own complaints"
+  ON complaints FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- 사용자는 본인의 민원만 생성 가능
+CREATE POLICY "Users can create own complaints"
+  ON complaints FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- 관리자는 모든 민원 조회 가능
+CREATE POLICY "Admins can view all complaints"
+  ON complaints FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role = 'admin'
+    )
+  );
+
+-- 관리자는 모든 민원 수정/삭제 가능
+CREATE POLICY "Admins can update all complaints"
+  ON complaints FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role = 'admin'
+    )
+  );
+
+CREATE POLICY "Admins can delete all complaints"
+  ON complaints FOR DELETE
   USING (
     EXISTS (
       SELECT 1 FROM profiles
@@ -338,4 +411,31 @@ MIT License
    - 반응형 그리드
 
 **마지막 업데이트**: 2025년 10월 14일
+
+### 민원 관리 시스템
+민원 관리 시스템이 추가되었습니다!
+
+#### 주요 기능
+1. **사용자 민원 접수**
+   - 다양한 카테고리별 민원 접수 (시설, 보안, 소음, 주차 등)
+   - 우선순위 설정 (낮음/보통/높음/긴급)
+   - 익명 접수 옵션 제공
+   - 실시간 민원 상태 확인
+
+2. **관리자 민원 관리**
+   - 전체 민원 조회 및 상태별 필터링
+   - 민원 답변 작성 기능
+   - **처리 상태 변경 기능** (접수됨/처리중/해결됨/종료됨)
+   - **악성민원 삭제 기능** (확인 메시지 포함)
+   - 우선순위 및 카테고리별 관리
+   - 사용자 정보 표시 (익명 제외)
+
+3. **향상된 사용자 경험**
+   - 모던한 카드 기반 레이아웃
+   - 상태별 색상 구분 (접수됨/처리중/해결됨/종료됨)
+   - 답변 모달에 처리 상태 선택 기능 추가
+   - 원클릭 상태 변경 버튼
+   - 삭제 확인 메시지로 실수 방지
+
+**최신 업데이트**: 2025년 1월 24일
 
