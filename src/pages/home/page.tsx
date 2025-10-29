@@ -73,37 +73,41 @@ export default function Home() {
             <div className="flex items-center">
               <Logo26Building size={40} />
             </div>
-            <nav className="flex items-center space-x-4">
+            <nav className="flex items-center space-x-2 sm:space-x-4">
               {loading ? (
                 <div className="flex items-center space-x-2">
                   <i className="ri-loader-4-line animate-spin text-gray-600"></i>
-                  <span className="text-sm text-gray-600">로딩 중...</span>
+                  <span className="hidden sm:inline text-sm text-gray-600">로딩 중...</span>
                 </div>
               ) : !isLoggedIn ? (
                 <>
                   <Link 
                     to="/login" 
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="text-gray-600 hover:text-gray-900 px-2 sm:px-3 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
                   >
                     로그인
                   </Link>
                 </>
               ) : (
                 <>
-                  <span className="text-sm text-gray-600">
+                  <span className="hidden md:inline text-sm text-gray-600">
                     안녕하세요, {user?.user_metadata?.name || user?.email || '사용자'}님
                   </span>
                   <Link 
                     to="/dashboard" 
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="text-gray-600 hover:text-gray-900 px-2 sm:px-3 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                    title="대시보드"
                   >
-                    대시보드
+                    <span className="hidden sm:inline">대시보드</span>
+                    <i className="ri-dashboard-line sm:hidden text-lg"></i>
                   </Link>
                   <button 
                     onClick={handleLogout}
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="text-gray-600 hover:text-gray-900 px-2 sm:px-3 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                    title="로그아웃"
                   >
-                    로그아웃
+                    <span className="hidden sm:inline">로그아웃</span>
+                    <i className="ri-logout-box-line sm:hidden text-lg"></i>
                   </button>
                 </>
               )}

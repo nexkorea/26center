@@ -128,9 +128,11 @@ const NoticeList: React.FC<NoticeListProps> = ({
           <h2 className="text-2xl font-bold text-gray-900">공지사항</h2>
           <Link 
             to="/notices" 
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors duration-200"
+            title="전체보기"
           >
-            전체보기 →
+            <span className="hidden sm:inline">전체보기</span>
+            <i className="ri-arrow-right-line"></i>
           </Link>
         </div>
       )}
@@ -168,7 +170,7 @@ const NoticeList: React.FC<NoticeListProps> = ({
                 </div>
                 
                 <div className="flex items-center gap-3 ml-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
+                  <div className="hidden md:flex items-center gap-1">
                     <i className="ri-eye-line"></i>
                     <span>{notice.view_count}</span>
                   </div>

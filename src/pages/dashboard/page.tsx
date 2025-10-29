@@ -109,20 +109,27 @@ export default function Dashboard() {
       {/* 헤더 */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-4 sm:py-6">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
                 <Logo26Building size={40} />
               </Link>
-              <span className="ml-4 text-gray-600">입주자 대시보드</span>
+              <span className="ml-2 sm:ml-4 text-gray-600 text-sm sm:text-base">
+                <span className="hidden sm:inline">입주자 대시보드</span>
+                <span className="sm:hidden">대시보드</span>
+              </span>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">안녕하세요, {profile?.name}님</span>
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <span className="hidden md:inline text-sm sm:text-base text-gray-700">
+                안녕하세요, {profile?.name}님
+              </span>
               <button
                 onClick={handleLogout}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-3 sm:px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                title="로그아웃"
               >
-                로그아웃
+                <span className="hidden sm:inline">로그아웃</span>
+                <i className="ri-logout-box-line sm:hidden text-lg"></i>
               </button>
             </div>
           </div>

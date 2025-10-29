@@ -338,24 +338,28 @@ export default function AdminComplaintsPage() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <Link to="/" className="flex items-center space-x-3">
+          <div className="flex justify-between items-center py-4 sm:py-6">
+            <Link to="/" className="flex items-center space-x-2 sm:space-x-3">
               <Logo26Building size={40} />
             </Link>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Link 
                 to="/admin" 
-                className="text-gray-600 hover:text-gray-900 font-medium"
+                className="text-gray-600 hover:text-gray-900 font-medium px-2 sm:px-0"
+                title="관리자 대시보드"
               >
-                관리자 대시보드
+                <span className="hidden sm:inline">관리자 대시보드</span>
+                <i className="ri-dashboard-line sm:hidden text-lg"></i>
               </Link>
-              <span className="text-gray-400">|</span>
-              <span className="text-gray-600">{profile?.name || '관리자'}</span>
+              <span className="hidden md:inline text-gray-400">|</span>
+              <span className="hidden lg:inline text-gray-600 text-sm">{profile?.name || '관리자'}</span>
               <button
                 onClick={handleLogout}
-                className="text-red-600 hover:text-red-700 font-medium"
+                className="text-red-600 hover:text-red-700 font-medium px-2 sm:px-0"
+                title="로그아웃"
               >
-                로그아웃
+                <span className="hidden sm:inline">로그아웃</span>
+                <i className="ri-logout-box-line sm:hidden text-lg"></i>
               </button>
             </div>
           </div>

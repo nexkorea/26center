@@ -272,41 +272,49 @@ export default function Admin() {
       {/* 헤더 */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-4 sm:py-6">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
                 <Logo26Building size={40} />
               </Link>
-              <span className="ml-4 text-gray-600">관리자 대시보드</span>
+              <span className="ml-2 sm:ml-4 text-gray-600 text-sm sm:text-base">
+                <span className="hidden sm:inline">관리자 대시보드</span>
+                <span className="sm:hidden">대시보드</span>
+              </span>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
               <Link
                 to="/admin/notices"
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap flex items-center space-x-2"
+                className="bg-green-600 hover:bg-green-700 text-white px-2 sm:px-3 lg:px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap flex items-center space-x-1 sm:space-x-2"
+                title="공지사항 관리"
               >
                 <i className="ri-notification-line"></i>
-                <span>공지사항 관리</span>
+                <span className="hidden lg:inline">공지사항 관리</span>
               </Link>
               <Link
                 to="/admin/complaints"
-                className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap flex items-center space-x-2"
+                className="bg-orange-600 hover:bg-orange-700 text-white px-2 sm:px-3 lg:px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap flex items-center space-x-1 sm:space-x-2"
+                title="민원 관리"
               >
                 <i className="ri-customer-service-line"></i>
-                <span>민원 관리</span>
+                <span className="hidden lg:inline">민원 관리</span>
               </Link>
               <Link
                 to="/admin/move-in-card/new"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap flex items-center space-x-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 lg:px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap flex items-center space-x-1 sm:space-x-2"
+                title="새 입주카드"
               >
                 <i className="ri-add-line"></i>
-                <span>새 입주카드</span>
+                <span className="hidden lg:inline">새 입주카드</span>
               </Link>
-              <span className="text-gray-700">관리자: {profile?.name}님</span>
+              <span className="hidden xl:inline text-gray-700 text-sm">관리자: {profile?.name}님</span>
               <button
                 onClick={handleLogout}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-2 sm:px-3 lg:px-4 py-2 rounded-md text-sm font-medium cursor-pointer whitespace-nowrap"
+                title="로그아웃"
               >
-                로그아웃
+                <span className="hidden sm:inline">로그아웃</span>
+                <i className="ri-logout-box-line sm:hidden text-lg"></i>
               </button>
             </div>
           </div>

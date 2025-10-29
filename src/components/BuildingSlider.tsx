@@ -139,8 +139,8 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
               {/* 그라데이션 오버레이 */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
               
-              {/* 이미지 제목 오버레이 */}
-              <div className="absolute bottom-8 left-8 text-white">
+              {/* 이미지 제목 오버레이 (모바일에서는 숨김) */}
+              <div className="hidden md:block absolute bottom-8 left-8 text-white">
                 <h3 className="text-2xl font-bold mb-2 drop-shadow-lg">
                   {image.title}
                 </h3>
@@ -153,35 +153,35 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
         ))}
       </div>
 
-      {/* 네비게이션 버튼 */}
+      {/* 네비게이션 버튼 (모바일에서는 숨김) */}
       {!isLoading && allImagesLoaded && (
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg group"
+            className="hidden md:flex absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 lg:p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg group"
             aria-label="이전 슬라이드"
           >
-            <i className="ri-arrow-left-line text-2xl group-hover:scale-110 transition-transform"></i>
+            <i className="ri-arrow-left-line text-xl lg:text-2xl group-hover:scale-110 transition-transform"></i>
           </button>
           
           <button
             onClick={goToNext}
-            className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg group"
+            className="hidden md:flex absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 lg:p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg group"
             aria-label="다음 슬라이드"
           >
-            <i className="ri-arrow-right-line text-2xl group-hover:scale-110 transition-transform"></i>
+            <i className="ri-arrow-right-line text-xl lg:text-2xl group-hover:scale-110 transition-transform"></i>
           </button>
         </>
       )}
 
-      {/* 슬라이드 인디케이터 */}
+      {/* 슬라이드 인디케이터 (모바일은 더 작게) */}
       {!isLoading && allImagesLoaded && (
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
+        <div className="absolute bottom-3 sm:bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
           {buildingImages.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-4 h-4 rounded-full transition-all duration-300 shadow-lg ${
+              className={`w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 shadow-lg ${
                 index === currentSlide
                   ? 'bg-white scale-125 shadow-xl'
                   : 'bg-white/60 hover:bg-white/80 hover:scale-110'
@@ -192,9 +192,9 @@ const BuildingSlider: React.FC<BuildingSliderProps> = ({ className = '' }) => {
         </div>
       )}
 
-      {/* 슬라이드 카운터 */}
+      {/* 슬라이드 카운터 (모바일에서는 숨김) */}
       {!isLoading && allImagesLoaded && (
-        <div className="absolute top-6 right-6 bg-black/30 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
+        <div className="hidden md:block absolute top-6 right-6 bg-black/30 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
           {currentSlide + 1} / {buildingImages.length}
         </div>
       )}

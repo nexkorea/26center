@@ -157,7 +157,7 @@ export default function NoticesPage() {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold text-gray-900">공지사항</h1>
-            <div className="text-sm text-gray-500">
+            <div className="hidden sm:block text-sm text-gray-500">
               총 {notices.length}개의 공지사항
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function NoticesPage() {
                       </div>
                       
                       <div className="flex items-center gap-4 ml-6 text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
+                        <div className="hidden md:flex items-center gap-1">
                           <i className="ri-eye-line"></i>
                           <span>{notice.view_count}</span>
                         </div>
